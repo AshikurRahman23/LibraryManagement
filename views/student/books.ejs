@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>All Books</title>
+  <link rel="stylesheet" href="/css/studentAllBooks.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+</head>
+<body>
+
+  <header>
+    <h2>📚 All Books</h2>
+  </header>
+
+  <nav>
+    <a href="/student/dashboard">🏠 Dashboard</a> |
+    <a href="/student/books">📚 View All Books</a> |
+    <a href="/student/mybooks">📖 My Books</a> |
+    <a href="/auth/logout">🚪 Logout</a>
+  </nav>
+
+  <div class="container">
+    <!-- Search Bar -->
+    <div class="search-bar">
+      <form method="GET" action="/student/books">
+        <input type="text" name="search" placeholder="Search books by title, author..." required>
+        <button type="submit">🔍 Search</button>
+      </form>
+    </div>
+
+    <% if (books.length > 0) { %>
+      <table class="books-table">
+        <thead>
+          <tr>
+            <th>📘 Title</th>
+            <th>✍️ Author</th>
+            <th>🏷️ Genre</th>
+            <th>📦 Available Copies</th>
+            <th>⚡ Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% books.forEach(book => { %>
+            <tr>
+              <td><%= book.title %></td>
+              <td><%= book.author %></td>
+              <td><%= book.genre %></td>
+              <td><%= book.available_copies %></td>
+              
+              <td>
+                <%if(borrowed >=3){%>
+                  <span class="unavailable">Limit Reached</span>
+                <% } else { %>
+                <% if (book.available_copies > 0 ) { %>
+                  <form method="POST" action="/student/borrow">
+                    <input type="hidden" name="book_id" value="<%= book.id %>">
+                    <button type="submit" class="btn-borrow">Borrow</button>
+                  </form>
+                <% } else { %>
+                  <span class="unavailable">Unavailable</span>
+                <% } %>
+                 <% } %>
+              </td>
+            </tr>
+          <% }) %>
+        </tbody>
+      </table>
+    <% } else { %>
+      <p class="no-books">No books in the library yet.</p>
+    <% } %>
+  </div>
+
+<footer>
+  <p>&copy; <%= new Date().getFullYear() %> Online Library Management System</p>
+  <p>Contact: library@university.edu | Phone: +880-123-456789</p>
+</footer>
+
+</body>
+</html>

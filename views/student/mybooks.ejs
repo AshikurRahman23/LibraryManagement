@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Borrowed Books</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/studentMyBooks.css">
+</head>
+<body>
+
+<header>
+  <h2>📖 Borrowed Books  </h2>
+</header>
+
+<nav>
+  <a href="/student/dashboard">🏠 Dashboard</a> |
+  <a href="/student/books">📚 View All Books</a> |
+  <a href="/student/mybooks">📖 My Books</a> |
+  <a href="/auth/logout">🚪 Logout</a>
+</nav>
+
+<div class="container">
+
+  <!-- Search Bar -->
+  <div class="search-bar">
+    <form method="GET" action="/student/mybooks">
+      <input type="text" name="search" placeholder="Search books by title,author..." required>
+      <button type="submit">🔍 Search</button>
+    </form>
+  </div>
+
+  <h3>Currently Borrowed
+        <%if(borrowed >=3){%>
+                  (<span class="unavailable">Limit Reached</span>)
+                <% } %>
+  </h3>
+  <% if (currentLoans.length > 0) { %>
+    <table class="borrowed-table">
+      <tr>
+        <th>Title</th>
+        <th>Status</th>
+        <th>Issued At</th>
+        <th>Return Date</th>
+        <th>Days Left</th>
+      </tr>
+      <% currentLoans.forEach(loan => { %>
+        <tr>
+          <td><%= loan.title %></td>
+          <td>
+            <% if (loan.status === 'overdue') { %>
+              <span class="overdue">Overdue</span>
+            <% } else { %>
+              <%= loan.status %>
+            <% } %>
+          </td>
+          <td><%= new Date(loan.issued_at).toLocaleDateString() %></td>
+          <td><%= new Date(loan.return_date).toLocaleDateString() %></td>
+          <td>
+            <% 
+              const today = new Date();
+              const due = new Date(loan.return_date);
+              const diff = Math.ceil((due - today) / (1000 * 60 * 60 * 24));
+            %>
+            <% if (isNaN(diff) || diff < 0) { %>
+              <span class="overdue">Overdue</span>
+            <% } else { %>
+              <%= diff %> days
+            <% } %>
+          </td>
+        </tr>
+      <% }) %>
+    </table>
+  <% } else { %>
+    <p class="no-books">No books currently borrowed.</p>
+  <% } %>
+
+  <h3>Returned Books</h3>
+  <% if (pastLoans.length > 0) { %>
+    <table class="borrowed-table">
+      <tr>
+        <th>Title</th>
+        <th>Returned At</th>
+      </tr>
+      <% pastLoans.forEach(loan => { %>
+        <tr>
+          <td><%= loan.title %></td>
+          <td><%= new Date(loan.returned_at).toLocaleDateString() %></td>
+        </tr>
+      <% }) %>
+    </table>
+  <% } else { %>
+    <p class="no-books">No books returned yet.</p>
+  <% } %>
+
+</div>
+
+<footer>
+  <p>&copy; <%= new Date().getFullYear() %> Online Library Management System</p>
+  <p>Contact: library@university.edu | Phone: +880-123-456789</p>
+</footer>
+
+</body>
+</html>

@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Student Dashboard</title>
+  <link rel="stylesheet" href="/css/studentDashboard.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+</head>
+<body>
+
+  <header>
+    <h2>
+    Welcome, <%= user.name %>!
+    </h2>
+    <p>Student ID: <strong><%= user.student_id %></strong></p>
+  </header>
+
+  <nav>
+    <a href="/student/books">📚 View All Books</a> |
+    <a href="/student/mybooks">📖 My Books</a> |
+    <a href="/auth/logout">🚪 Logout</a>
+  </nav>
+
+  <div class="container">
+   <p class="welcome-text">
+  Welcome to the <strong>Online Library Management System</strong>.  
+  Explore our <span class="highlight">vast collection of books</span> and manage your reading <em>effortlessly</em>.
+</p>
+
+
+    <!-- Search Bar -->
+    <div class="search-bar">
+      <form method="GET" action="/student/books">
+        <input type="text" name="search" placeholder="Search books by title,author,genre..." required>
+        <button type="submit">🔍 Search</button>
+      </form>
+    </div>
+
+    <!-- Featured Books -->
+    <div class="featured">
+  <h3>🌟 Featured Books</h3>
+  <% if (featuredBooks.length > 0) { %>
+    <ul>
+      <% featuredBooks.forEach(book => { %>
+        <li><h4>📘 <%= book.title %> </h4> <p>– <%= book.author %></p></li>
+      <% }) %>
+    </ul>
+  <% } else { %>
+    <p>No featured books available.</p>
+  <% } %>
+</div>
+
+  <footer>
+    <p>&copy; <%= new Date().getFullYear() %> Online Library Management System</p>
+    <p>Contact: library@university.edu | Phone: +880-123-456789</p>
+  </footer>
+
+</body>
+</html>

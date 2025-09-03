@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Dashboard</title>
+  <link rel="stylesheet" href="/css/adminDashboard.css ">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
+</head>
+<body>
+
+<h2>📊 Admin Dashboard</h2>
+
+<nav>
+  <a href="/admin/books">📚 Manage Books</a> |
+  <a href="/admin/students">👨‍🎓 View Students</a> |
+  <a href="/admin/loans">📖 Manage Loans</a> |
+  <a href="/auth/logout">🚪 Logout</a>
+</nav>
+
+<hr>
+
+<!-- Stats Section -->
+<div class="stats">
+  <div class="card">
+    <h3>Total Books</h3>
+    <p><%= stats.totalBooks %></p>
+    <span>📚 Books available in the library collection</span>
+  </div>
+
+  <div class="card">
+    <h3>Total Copies</h3>
+    <p><%= stats.totalCopies %></p>
+    <span>🔖 Total number of physical copies across all titles</span>
+  </div>
+
+  <div class="card">
+    <h3>Total Students</h3>
+    <p><%= stats.totalStudents %></p>
+    <span>👨‍🎓 Registered students with library accounts</span>
+  </div>
+
+  <div class="card">
+    <h3>Books Loaned</h3>
+    <p><%= stats.booksLoaned %></p>
+    <span>📖 Books currently issued to students</span>
+  </div>
+
+  <div class="card">
+    <h3>Books Returned</h3>
+    <p><%= stats.booksReturned %></p>
+    <span>✅ Books successfully returned this term</span>
+  </div>
+
+  <div class="card">
+    <h3>Overdue Books</h3>
+    <p><%= stats.overdueBooks %></p>
+    <span>⚠️ Books not returned by their due date</span>
+  </div>
+</div>
+
+<footer>
+  <p>&copy; <%= new Date().getFullYear() %> Online Library Management System</p>
+  <p>Contact: library@university.edu | Phone: +880-123-456789</p>
+</footer>
+</body>
+</html>

@@ -1,0 +1,9 @@
+<header>
+  <nav>
+    <a href="/">Library System</a>
+    <% if(user){ %>
+      <span>Welcome <%= user.name %> | <a href="/auth/logout">Logout</a></span>
+    <% } %>
+  </nav>
+</header>
+<hr>

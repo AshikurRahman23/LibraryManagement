@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sign Up</title>
+  <!-- Include your CSS here if needed -->
+  <link rel="stylesheet" href="/css/signup.css">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+</head>
+<body>
+<div class="signup-container">
+  <form id="signupForm" method="POST" action="/auth/signup">
+    <h2>📖 Sign Up</h2>
+
+    <% if (error_msg) { %>
+      <p class="msg error"><%= error_msg %></p>
+    <% } %>
+
+    <% if (success_msg) { %>
+      <p class="msg success"><%= success_msg %></p>
+    <% } %>
+
+    <input type="text" name="name" placeholder="Full Name" required>
+    <input type="email" name="email" placeholder="Email" required>
+    <input type="password" name="password" placeholder="Password" required>
+    <input type="text" name="student_id" placeholder="Student ID" required>
+    <input type="text" name="mobile_no" placeholder="Mobile No." required>
+    <input type="hidden" name="role" value="student">
+
+    <button type="submit">Sign Up</button>
+  </form>
+
+  <p class="signup-link">
+    Already have an account? <a href="/auth/login">Login here</a>
+  </p>
+</div>
+</body>
+</html>

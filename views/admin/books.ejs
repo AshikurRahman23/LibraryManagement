@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Manage Books - Admin Dashboard</title>
+
+  <!-- Include your CSS here if needed -->
+  <link rel="stylesheet" href="/css/manageBooks.css ">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
+</head>
+<body>
+
+<h2>📚 Manage Books</h2>
+
+<nav>
+  <a href="/admin/dashboard">🏠 Dashboard</a> |
+  <a href="/admin/books">📚 Manage Books</a> |
+  <a href="/admin/students">👨‍🎓 View Students</a> |
+  <a href="/admin/loans">📖 Manage Loans</a> |
+  <a href="/auth/logout">🚪 Logout</a>
+</nav>
+
+<hr>
+
+<h3>Add Book</h3>
+<form method="POST" action="/admin/books/add">
+  <input type="text" name="title" placeholder="Book Title" required>
+  <input type="text" name="author" placeholder="Author" required>
+  <input type="number" name="total_copies" placeholder="Total Copies" required min="1">
+  <input type="text" name="genre" placeholder="Genre" required>
+  <button type="submit">Add</button>
+</form>
+
+    <!-- Search Bar -->
+    <div class="search-bar">
+      <form method="GET" action="/admin/books">
+        <input type="text" name="search" placeholder="Search by title, author,genre..." required>
+        <button type="submit">🔍 Search</button>
+      </form>
+    </div>
+
+<h3>Books List</h3>
+<% if (books.length > 0) { %>
+  <table border="1" cellpadding="5" cellspacing="0">
+    <tr>
+      <th>Title</th>
+      <th>Author</th>
+      <th>Total</th>
+      <th>Available</th>
+      <th>Genre</th>
+      <th>Actions</th>
+    </tr>
+    <% books.forEach(book => { %>
+      <tr>
+        <td><%= book.title %></td>
+        <td><%= book.author %></td>
+        <td><%= book.total_copies %></td>
+        <td><%= book.available_copies %></td>
+        <td><%= book.genre %></td>
+        <td>
+          <form method="POST" action="/admin/books/delete" style="display:inline">
+            <input type="hidden" name="id" value="<%= book.id %>">
+            <button type="submit">Delete</button>
+          </form>
+
+          <button type="button" onclick="openModal('<%= book.id %>', '<%= book.title %>', '<%= book.author %>', '<%= book.total_copies %>', '<%= book.genre %>')">Edit</button>
+
+        </td>
+      </tr>
+    <% }) %>
+  </table>
+<% } else { %>
+  <p>No books available yet.</p>
+<% } %>
+
+<!-- Modal Backdrop -->
+<div id="modalBackdrop"></div>
+
+<!-- Update Modal -->
+<div id="updateModal">
+  <h3>Update Book</h3>
+  <form method="POST" action="/admin/books/update">
+    <input type="hidden" id="modalBookId" name="id">
+    <label>Title:</label>
+    <input type="text" id="modalTitle" name="title" required><br><br>
+    <label>Author:</label>
+    <input type="text" id="modalAuthor" name="author" required><br><br>
+    <label>Total Copies:</label>
+    <input type="number" id="modalTotal" name="total_copies" required min="1"><br><br>
+    <label>Genre:</label>
+    <input type="text" id="modalGenre" name="genre" required><br><br>
+    
+    <button type="submit">Update</button>
+    <button type="button" onclick="closeModal()">Cancel</button>
+  </form>
+</div>
+
+<script>
+function openModal(id, title, author, total, genre) {
+    document.getElementById('modalBookId').value = id;
+    document.getElementById('modalTitle').value = title;
+    document.getElementById('modalAuthor').value = author;
+    document.getElementById('modalTotal').value = total;
+    document.getElementById('modalGenre').value = genre;
+    document.getElementById('updateModal').style.display = 'block';
+    document.getElementById('modalBackdrop').style.display = 'block';
+}
+
+
+function closeModal() {
+    document.getElementById('updateModal').style.display = 'none';
+    document.getElementById('modalBackdrop').style.display = 'none';
+}
+</script>
+<footer>
+  <p>&copy; <%= new Date().getFullYear() %> Online Library Management System</p>
+  <p>Contact: library@university.edu | Phone: +880-123-456789</p>
+</footer>
+</body>
+</html>

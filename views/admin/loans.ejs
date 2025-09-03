@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Manage Loans</title>
+  <link rel="stylesheet" href="/css/loans.css"> <!-- link your CSS file -->
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
+</head>
+<body>
+
+<h2>📖 Manage Loans</h2>
+
+<nav>
+  <a href="/admin/dashboard">🏠 Dashboard</a> |
+  <a href="/admin/books">📚 Manage Books</a> |
+  <a href="/admin/students">👨‍🎓 View Students</a> |
+  <a href="/admin/loans">📖 Manage Loans</a> |
+  <a href="/auth/logout">🚪 Logout</a>
+</nav>
+
+<hr>
+
+<!-- Search Bar -->
+    <!-- Search Bar -->
+    <div class="search-bar">
+      <form method="GET" action="/admin/loans">
+        <input type="text" name="search" placeholder="Search books by title, author..." required>
+        <button type="submit">🔍 Search</button>
+      </form>
+    </div>
+
+<% if (loans.length > 0) { %>
+  <table>
+    <thead>
+      <tr>
+        <th>Book</th>
+        <th>Student Name</th>
+        <th>Student ID</th>
+        <th>Status</th>
+        <th>Issued At</th>
+        <th>Returned At</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+    <% loans.forEach(loan => { %>
+      <tr>
+        <td><%= loan.title %></td>
+        <td><%= loan.name %></td>
+        <td><%= loan.student_id %></td>
+        <td><%= loan.status %></td>
+        <td><%= loan.issued_at.toDateString() %></td>
+        <td><%= loan.returned_at ? loan.returned_at.toDateString() : '-' %></td>
+        <td>
+          <% if (loan.status === 'issued' || loan.status === 'overdue') { %>
+            <form method="POST" action="/admin/loans/return" style="display:inline">
+              <input type="hidden" name="loan_id" value="<%= loan.id %>">
+              <input type="hidden" name="book_id" value="<%= loan.book_id %>">
+              <button type="submit">Mark Returned</button>
+            </form>
+          <% } %>
+        </td>
+      </tr>
+    <% }) %>
+    </tbody>
+  </table>
+<% } else { %>
+  <p>No loans recorded yet.</p>
+<% } %>
+
+<footer>
+  <p>&copy; <%= new Date().getFullYear() %> Online Library Management System</p>
+  <p>Contact: library@university.edu | Phone: +880-123-456789</p>
+</footer>
+
+</body>
+</html>

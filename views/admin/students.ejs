@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Registered Students</title>
+  <!-- Include your CSS here if needed -->
+  <link rel="stylesheet" href="/css/viewStudents.css ">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
+</head>
+<body>
+
+<h2>👨‍🎓 Registered Students</h2>
+
+<nav>
+  <a href="/admin/dashboard">🏠 Dashboard</a> |
+  <a href="/admin/books">📚 Manage Books</a> |
+  <a href="/admin/students">👨‍🎓 View Students</a> |
+  <a href="/admin/loans">📖 Manage Loans</a> |
+  <a href="/auth/logout">🚪 Logout</a>
+</nav>
+
+<hr>
+    <!-- Search Bar -->
+    <div class="search-bar">
+      <form method="GET" action="/admin/students">
+        <input type="text" name="search" placeholder="Search books by title, author..." required>
+        <button type="submit">🔍 Search</button>
+      </form>
+    </div>
+
+<% if (students.length > 0) { %>
+  <table border="1" cellpadding="5" cellspacing="0">
+    <tr>
+      <th>Name</th>
+      <th>Email</th>
+      <th>Student ID</th>
+      <th>Mobile No.</th>
+      <th>Joined At</th>
+    </tr>
+    <% students.forEach(student => { %>
+      <tr>
+        <td><%= student.name %></td>
+        <td><%= student.email %></td>
+        <td><%= student.student_id %></td>
+        <td><%= student.mobile_no %></td>
+        <td><%= new Date(student.created_at).toLocaleDateString() %></td>
+      </tr>
+    <% }) %>
+  </table>
+<% } else { %>
+  <p>No students registered yet.</p>
+<% } %>
+
+<footer>
+  <p>&copy; <%= new Date().getFullYear() %> Online Library Management System</p>
+  <p>Contact: library@university.edu | Phone: +880-123-456789</p>
+</footer>
+</body>
+</html>
