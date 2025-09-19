@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Borrow Requests | Admin</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/request.css">
+</head>
+<body>
+
+  <!-- HEADER -->
+  <header>
+    <h2>📌 Borrow Requests</h2>
+    <nav>
+      <a href="/admin/dashboard">🏠 Dashboard</a>
+      <a href="/admin/books">📚 Manage Books</a>
+      <a href="/admin/students">👨‍🎓 View Students</a>
+      <a href="/admin/loans">📖 Manage Loans</a>
+      <a href="/admin/requests">📌 Borrow Requests</a>
+      <a href="/auth/logout">🚪 Logout</a>
+    </nav>
+  </header>
+
+  <!-- MAIN CONTENT -->
+  <% if (requests.length > 0) { %>
+    <table>
+      <thead>
+        <tr>
+          <th>📖 Book Title</th>
+          <th>👤 Student</th>
+          <th>🪪 StudentID</th>
+          <th>📅 Requested At</th>
+          <th>⚡ Status</th>
+          <th>✅ Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% requests.forEach(r => { %>
+          <tr>
+            <td><%= r.book_title %></td>
+            <td><%= r.student_name %></td>
+            <td><%=r.student_id%></td>
+            <td><%= new Date(r.requested_at).toLocaleDateString() %></td>
+            <td>
+              <% if (r.status === "pending") { %>
+                <span class="status-pending">⏳ Pending</span>
+              <% } else if (r.status === "approved") { %>
+                <span class="status-approved">✅ Approved</span>
+              <% } else { %>
+                <span class="status-rejected">❌ Rejected</span>
+              <% } %>
+            </td>
+            <td>
+              <% if (r.status === "pending") { %>
+                <form action="/admin/requests/<%= r.id %>/approve" method="POST" style="display:inline;">
+                  <button type="button">Approve</button>
+                </form>
+                <form action="/admin/requests/<%= r.id %>/reject" method="POST" style="display:inline;">
+                  <button type="submit">Reject</button>
+                </form>
+              <% } else { %>
+                <em>—</em>
+              <% } %>
+            </td>
+          </tr>
+        <% }) %>
+      </tbody>
+    </table>
+  <% } else { %>
+    <p class="empty-msg">No pending requests at the moment 🎉</p>
+  <% } %>
+
+  <!-- FOOTER -->
+<footer>
+  <p>&copy; <%= new Date().getFullYear() %> Online Library Management System</p>
+  <p>Contact: library@university.edu | Phone: +880-123-456789</p>
+</footer>
+
+</body>
+</html>

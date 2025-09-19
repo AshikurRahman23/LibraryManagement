@@ -356,13 +356,12 @@ footer {
   background: linear-gradient(135deg, #3d5a80, #2b3a67);
   color: white;
   text-align: center;
-  padding: 18px;
-  font-size: 0.95rem;
-  margin-top: auto; /* pushes footer to bottom */
+  padding: 16px;
+  font-size: 0.9rem;
+  margin-top: auto;
   box-shadow: 0 -3px 10px rgba(0,0,0,0.1);
   letter-spacing: 0.5px;
 }
-
 
 /* =======================
    ANIMATIONS

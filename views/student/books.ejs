@@ -55,9 +55,9 @@
                   <span class="unavailable">Limit Reached</span>
                 <% } else { %>
                 <% if (book.available_copies > 0 ) { %>
-                  <form method="POST" action="/student/borrow">
-                    <input type="hidden" name="book_id" value="<%= book.id %>">
-                    <button type="submit" class="btn-borrow">Borrow</button>
+                 <form action="/student/borrow-request" method="POST">
+                  <input type="hidden" name="bookId" value="<%= book.id %>">
+                 <button type="submit" class="btn-borrow">Borrow</button>
                   </form>
                 <% } else { %>
                   <span class="unavailable">Unavailable</span>

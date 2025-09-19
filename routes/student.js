@@ -1,84 +1,78 @@
 import express from 'express';
-import { getAllBooks, decrementBookCopy,getFeaturedBooks,getSearchBooks } from '../models/bookModel.js';
-import { getStudentLoans, createLoan,getStudentSearchLoans,countCurrentlyBorrowedBooks } from '../models/loanModel.js';
+import db from '../models/db.js'; // ✅ added db import
+import { getAllBooks, decrementBookCopy, getFeaturedBooks, getSearchBooks } from '../models/bookModel.js';
+import { getStudentLoans, createLoan, getStudentSearchLoans, countCurrentlyBorrowedBooks } from '../models/loanModel.js';
 
 const router = express.Router();
 
 router.use((req, res, next) => {
-    if (!req.session.user || req.session.user.role !== 'student') {
-        return res.redirect('/auth/login');
-    }
-    next();
+  if (!req.session.user || req.session.user.role !== 'student') {
+    return res.redirect('/auth/login');
+  }
+  next();
 });
 
 // Student dashboard
 router.get("/dashboard", async (req, res) => {
-    // Example: latest 4 books
-    const featuredBooks = await getFeaturedBooks(); // pg uses rows, mysql2 uses [0]
-
-    res.render("student/dashboard", {
-      user: req.session.user,
-      featuredBooks
-    });
-
+  const featuredBooks = await getFeaturedBooks();
+  res.render("student/dashboard", {
+    user: req.session.user,
+    featuredBooks
+  });
 });
 
 // View all books
 router.get('/books', async (req, res) => {
   const { search } = req.query;
   let books;
-
   if (search) {
     books = await getSearchBooks(search);
   } else {
     books = await getAllBooks();
   }
+  const borrowed = await countCurrentlyBorrowedBooks(req.session.user.id);
+  res.render('student/books', { user: req.session.user, books, borrowed });
+});
 
-  // Count borrowed books for current student
+router.get('/mybooks', async (req, res) => {
+  const { search } = req.query;
+  let loans;
+  if (search) {
+    loans = await getStudentSearchLoans(search, req.session.user.id);
+  } else {
+    loans = await getStudentLoans(req.session.user.id);
+  }
+
+  const currentLoans = loans.filter(l => l.status === 'issued' || l.status === 'overdue');
+  const pastLoans = loans.filter(l => l.status === 'returned');
   const borrowed = await countCurrentlyBorrowedBooks(req.session.user.id);
 
-  res.render('student/books', { 
+  res.render('student/mybooks', { 
     user: req.session.user, 
-    books, 
+    currentLoans, 
+    pastLoans,
     borrowed 
   });
 });
-router.get('/mybooks', async (req, res) => {
-    const {search} = req.query;
-    let loans;
 
-    if(search){
-       loans = await getStudentSearchLoans(search,req.session.user.id);
-    }
-    else{
-    loans = await getStudentLoans(req.session.user.id);
-    }
+router.post("/borrow-request", async (req, res) => {
+  const { bookId } = req.body;
+  const studentId = req.session.user.id; // <-- use correct ID
 
-    const currentLoans = loans.filter(l => l.status === 'issued' || l.status === 'overdue');
-    const pastLoans = loans.filter(l => l.status === 'returned');
-    const borrowed = await countCurrentlyBorrowedBooks(req.session.user.id);
+  try {
+    await db.query(
+      `INSERT INTO borrow_requests (student_id, book_id, status, requested_at)
+       VALUES ($1, $2, 'pending', NOW())`,
+      [studentId, bookId]
+    );
 
-    res.render('student/mybooks', { 
-        user: req.session.user, 
-        currentLoans, 
-        pastLoans,
-        borrowed 
-    });
+    res.redirect("/student/mybooks?msg=Request%20sent");
+  } catch (err) {
+    console.error(err);
+    res.send("Error sending borrow request");
+  }
 });
 
-// Borrow a book
-router.post('/borrow', async (req, res) => {
-    const bookId = req.body.book_id;
-    const studentId = req.session.user.id;
 
-    const issuedAt = new Date();
-    const returnDate = new Date();
-    returnDate.setMonth(returnDate.getMonth() + 1);
-
-    await createLoan(studentId, bookId, issuedAt, returnDate);
-    await decrementBookCopy(bookId);
-
-    res.redirect('/student/mybooks');
-});
 
 export default router;

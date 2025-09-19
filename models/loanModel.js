@@ -1,12 +1,18 @@
 import pool from './db.js';
 
 export const issueBook = async (book_id, student_id) => {
+    // Insert a proper issued loan
     await pool.query(
-        'INSERT INTO loans (book_id, student_id) VALUES ($1,$2)',
+        `INSERT INTO loans (book_id, student_id, status, issued_at) 
+         VALUES ($1, $2, 'issued', NOW())`,
         [book_id, student_id]
     );
+
+    // Decrease available copies (but not below 0)
     await pool.query(
-        'UPDATE books SET available_copies = available_copies - 1 WHERE id=$1',
+        `UPDATE books 
+         SET available_copies = GREATEST(available_copies - 1, 0) 
+         WHERE id = $1`,
         [book_id]
     );
 };
@@ -14,8 +20,10 @@ export const issueBook = async (book_id, student_id) => {
 export const returnBook = async (loan_id, book_id) => {
     // Mark loan as returned
     await pool.query(
-        'UPDATE loans SET returned_at=NOW(), status=$1 WHERE id=$2',
-        ['returned', loan_id]
+        `UPDATE loans 
+         SET returned_at = NOW(), status = 'returned' 
+         WHERE id = $1`,
+        [loan_id]
     );
 
     // Increase available copies, but not exceeding total_copies
@@ -31,14 +39,24 @@ export const returnBook = async (loan_id, book_id) => {
 export const getAllLoans = async () => {
     const res = await pool.query(
         `SELECT 
-            l.*,b.*,u.*
+            l.id,
+            l.book_id,
+            l.status,
+            l.issued_at,
+            l.returned_at,
+            b.title,
+            b.author,
+            b.genre,
+            u.name AS student_name,
+            u.student_id
         FROM loans l
         JOIN books b ON l.book_id = b.id
         JOIN users u ON l.student_id = u.id
-         ORDER BY l.returned_at DESC, l.issued_at DESC`
+        ORDER BY l.returned_at DESC, l.issued_at DESC`
     );
     return res.rows;
 };
+
 
 export async function getSearchLoans(search) {
     search = `%${search}%`;

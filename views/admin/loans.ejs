@@ -17,6 +17,7 @@
   <a href="/admin/books">📚 Manage Books</a> |
   <a href="/admin/students">👨‍🎓 View Students</a> |
   <a href="/admin/loans">📖 Manage Loans</a> |
+   <a href="/admin/requests">📌 Borrow Requests</a> |
   <a href="/auth/logout">🚪 Logout</a>
 </nav>
 
@@ -48,19 +49,20 @@
     <% loans.forEach(loan => { %>
       <tr>
         <td><%= loan.title %></td>
-        <td><%= loan.name %></td>
-        <td><%= loan.student_id %></td>
-        <td><%= loan.status %></td>
-        <td><%= loan.issued_at.toDateString() %></td>
-        <td><%= loan.returned_at ? loan.returned_at.toDateString() : '-' %></td>
-        <td>
-          <% if (loan.status === 'issued' || loan.status === 'overdue') { %>
-            <form method="POST" action="/admin/loans/return" style="display:inline">
-              <input type="hidden" name="loan_id" value="<%= loan.id %>">
-              <input type="hidden" name="book_id" value="<%= loan.book_id %>">
-              <button type="submit">Mark Returned</button>
-            </form>
-          <% } %>
+<td><%= loan.student_name %></td>
+<td><%= loan.student_id %></td>
+<td><%= loan.status %></td>
+<td><%= loan.issued_at ? new Date(loan.issued_at).toDateString() : '-' %></td>
+<td><%= loan.returned_at ? new Date(loan.returned_at).toDateString() : '-' %></td>
+<td>
+  <% if (loan.status === 'issued') { %>
+    <form method="POST" action="/admin/loans/return" style="display:inline">
+      <input type="hidden" name="loan_id" value="<%= loan.id %>">
+      <input type="hidden" name="book_id" value="<%= loan.book_id %>">
+      <button type="submit">Mark Returned</button>
+    </form>
+  <% } %>
+</td>
         </td>
       </tr>
     <% }) %>

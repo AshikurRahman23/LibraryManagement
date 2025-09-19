@@ -81,11 +81,17 @@
     <table class="borrowed-table">
       <tr>
         <th>Title</th>
+        <th>Status</th>
+        <th>Issued At</th>
+        <th>Return Date</th>
         <th>Returned At</th>
       </tr>
       <% pastLoans.forEach(loan => { %>
         <tr>
           <td><%= loan.title %></td>
+          <td><%= loan.status %></td>
+          <td><%= new Date(loan.issued_at).toLocaleDateString() %></td>
+          <td><%= new Date(loan.return_date).toLocaleDateString() %></td>
           <td><%= new Date(loan.returned_at).toLocaleDateString() %></td>
         </tr>
       <% }) %>
