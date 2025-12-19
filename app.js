@@ -12,7 +12,8 @@ const app = express();
 app.set('view engine', 'ejs');
 
 // Middleware
-app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.urlencoded({ extended: true })); // for web forms
+app.use(bodyParser.json()); // ✅ added for API calls (Flutter)
 app.use(express.static('public'));
 app.use(session({
     secret: 'library_secret',
@@ -21,7 +22,7 @@ app.use(session({
 }));
 app.use(flash());
 
-// Global variables
+// Global variables (for web)
 app.use((req, res, next) => {
     res.locals.success_msg = req.flash('success_msg');
     res.locals.error_msg = req.flash('error_msg');
@@ -34,10 +35,12 @@ app.use('/auth', authRoutes);
 app.use('/admin', adminRoutes);
 app.use('/student', studentRoutes);
 
+// Default route
 app.get('/', (req, res) => {
     res.redirect('/auth/login');
 });
 
+// Start server
 app.listen(3000, () => {
     console.log('Server running on http://localhost:3000');
 });
