@@ -12,9 +12,9 @@ const app = express();
 app.set('view engine', 'ejs');
 
 // Middleware
-app.use(bodyParser.urlencoded({ extended: true })); // for web forms
-app.use(bodyParser.json()); // ✅ added for API calls (Flutter)
 app.use(express.static('public'));
+
+
 app.use(session({
     secret: 'library_secret',
     resave: false,
@@ -41,6 +41,6 @@ app.get('/', (req, res) => {
 });
 
 // Start server
-app.listen(3000, () => {
-    console.log('Server running on http://localhost:3000');
+app.listen(5000, () => {
+    console.log('Server running on http://localhost:5000');
 });
